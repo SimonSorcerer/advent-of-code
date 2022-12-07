@@ -127,7 +127,3 @@ with open('input.txt', 'r') as f:
     spaceToFree = NEEDED_DISK_SIZE - freeSpace
     
     print('Part 2: ', findSmallest(filterSizeMapByMinSize(sizeMap, spaceToFree)))
-            
-            
-
-
