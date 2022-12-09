@@ -1,9 +1,3 @@
-def inSameRow(head, tail):
-    return head['y'] == tail['y']
-
-def inSameColumn(head, tail):
-    return head['x'] == tail['x']
-
 def isAdjacent(head, tail):
     return abs(head['x'] - tail['x']) <= 1 and abs(head['y'] - tail['y']) <= 1
 
@@ -37,13 +31,8 @@ def moveTail(head, tail):
     deltaY = getDelta(head['y'], tail['y'])
 
     if not isAdjacent(head, tail):
-        if inSameRow(head, tail):
-            newTail['x'] = tail['x'] + deltaX
-        if inSameColumn(head, tail):
-            newTail['y'] = tail['y'] + deltaY
-        else:
-            newTail['x'] = tail['x'] + deltaX
-            newTail['y'] = tail['y'] + deltaY
+        newTail['x'] = tail['x'] + deltaX
+        newTail['y'] = tail['y'] + deltaY
 
     return newTail
 
