@@ -24,7 +24,7 @@ with open('input.txt', 'r') as f:
     time = 0
 
     for row in range(0, CRT_HEIGHT):
-        print('')
         for col in range(0, CRT_WIDTH):
             time += 1
             print(getPixel(col, archive, time), end='')
+        print()
