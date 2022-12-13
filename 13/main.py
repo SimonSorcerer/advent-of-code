@@ -1,18 +1,16 @@
-from collections import deque
-import copy
-
 def updateStack(stack):
-    result = deque();
+    result = [];
     item = stack.pop()
 
     while item != '[':
-        result.appendleft(item)
+        result.append(item)
         item = stack.pop()
 
+    result.reverse()
     stack.append(result)
 
 def parse(line):
-    stack = deque()
+    stack = []
     readingNumber = None
     
     for char in line:
@@ -40,35 +38,31 @@ def getData(filename):
 def compareStacks(stack1, stack2):
     result = 0
 
-    while result == 0:
-        if len(stack1) == 0 and len(stack2) == 0:
-            return 0
-        elif len(stack2) == 0:
-            return -1
-        elif len(stack1) == 0:
+    for index in range(max(len(stack1), len(stack2))):
+        if result != 0:
+            break
+        if index >= len(stack1):
             return 1
+        if index >= len(stack2):
+            return -1
+        
+        item1, item2 = stack1[index], stack2[index]
 
-        item1 = stack1.popleft()
-        item2 = stack2.popleft()
-
-        if item1 == None and item2 == None:
-            result = 0
-        elif item1 == None:
+        if type(item1) == list and type(item2) == list:
+            result = compareStacks(item1, item2)
+        elif type(item1) == int and type(item2) == list:
+            result = compareStacks([item1], item2)
+        elif type(item1) == list and type(item2) == int:
+            result = compareStacks(item1, [item2])
+        elif type(item1) == int and type(item2) == int:
+            result = item2 - item1
+        elif item1 == None and item2 != None:
             result = 1
-        elif item2 == None:
+        elif item1 != None and item2 == None:
             result = -1
         else:
-            if isinstance(item1, deque):
-                if not isinstance(item2, deque):
-                    result = compareStacks(item1, deque([item2]))
-                else:
-                    result = compareStacks(item1, item2)
-            else:
-                if isinstance(item2, deque):
-                    result = compareStacks(deque([item1]), item2)
-                else:
-                    result = item2 - item1
-        
+            result = 0
+
     return result
 
 def part1(lines):
@@ -92,21 +86,21 @@ def part1(lines):
             pairIndex += 1
             
     return result
-    
+
 def bubblySort(stackOstacks):
     stackSize = len(stackOstacks)
 
     for i in range(0, stackSize - 1):
         for j in range(0, stackSize - i - 1):
-            if compareStacks(copy.deepcopy(stackOstacks[j + 1]), copy.deepcopy(stackOstacks[j])) > 0: 
+            if compareStacks(stackOstacks[j + 1], stackOstacks[j]) > 0: 
                 helper = stackOstacks[j]
                 stackOstacks[j] = stackOstacks[j + 1]
                 stackOstacks[j + 1] = helper
 
 def part2(lines):
-    two = deque([deque([2])])
-    six = deque([deque([6])])
-    stackOstacks = deque([two, six])
+    two = [[2]]
+    six = [[6]]
+    stackOstacks = [two, six]
     result = 1
 
     for line in lines:
