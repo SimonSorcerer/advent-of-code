@@ -47,7 +47,6 @@ def simulate(grid):
     sandX, sandY = None, None
 
     while not outOfGrid:
-        #printGrid(grid)
         if not inMotion:
             sandX, sandY = sourceX, sourceY
             sandGrainCount += 1
@@ -67,7 +66,6 @@ def simulate(grid):
                     placeInGrid(grid, (sandX, sandY), SAND)
                     outOfGrid = True
     return sandGrainCount
-            
 
 def part1(lines):
     data = []
