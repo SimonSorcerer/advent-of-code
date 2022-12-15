@@ -1,5 +1,6 @@
 import sys
 import operator
+from colors import COLORS
 
 AIR = '.'
 ROCK = '#'
@@ -104,6 +105,12 @@ def printGrid(grid):
     print()
     for row in grid:
         for char in row:
-            print(char, end=' ')    
-        print()
+            color = COLORS['ANSI_YELLOW']
+            if char == ROCK:
+                color = COLORS['ANSI_PURPLE']
+            elif char == SAND:
+                color = COLORS['ANSI_CYAN']
+            
+            print(color + char, end=' ')
+        print(COLORS['ANSI_RESET'])
     print()
