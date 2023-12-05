@@ -80,7 +80,6 @@ with open(filename, 'r') as f:
     seed_map_copy = []
     rules = []
     depth = 0
-    part = 2 # change to 2 for part 2
 
     startT = time.time()
     for index, line in enumerate(f, 1):
@@ -109,6 +108,6 @@ with open(filename, 'r') as f:
 
     #print_seed_map(seed_map)
     endT = time.time()
-
     print('time: ', endT - startT)
+    print('seed_count:', len(seed_map))
     print('result:', find_lowest_location(seed_map))

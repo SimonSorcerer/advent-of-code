@@ -58,7 +58,6 @@ with open(filename, 'r') as f:
     seed_map = []
     rules = []
     depth = 0
-    part = 2 # change to 2 for part 2
 
     for index, line in enumerate(f, 1):
         if (index == 1):
