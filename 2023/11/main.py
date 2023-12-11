@@ -4,8 +4,7 @@ import numpy as np;
 filename = 'input.txt'
 
 class bcolors:
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
+    DARKGREY = '\033[1;30m'
     WARNING = '\033[93m'
     ENDC = '\033[0m'
 
@@ -18,9 +17,9 @@ def visualize(space):
     for line in space:
         for char in line:
             if (char == SYMBOLS['galaxy']):
-                print(bcolors.WARNING + char + bcolors.ENDC, end='')
+                print(bcolors.WARNING + '#' + bcolors.ENDC, end='')
             else: 
-                print(char, end='')
+                print(bcolors.DARKGREY + '░' + bcolors.ENDC, end='')
         print('\n')
 
 def get_expandable_rows_and_cols(space):
@@ -78,7 +77,7 @@ with open(filename, 'r') as f:
         for char in line.strip():
             space[index].append(char)
 
-    #visualize(space)
+    visualize(space)
 
     expandable_rows, expandable_cols = get_expandable_rows_and_cols(space)
     
