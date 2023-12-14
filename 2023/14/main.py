@@ -1,5 +1,5 @@
 import time;
-from utils import rotate_matrix
+from utils import rotate_matrix, detect_sequence
 import numpy
 import math
 
@@ -73,29 +73,6 @@ def count_load(platform):
                 result += size - index
     return result
 
-def detect_sequence(sequence):
-    start_index = 0
-    repeat_index = 0
-    loop_length = 0
-
-    for index, item in enumerate(sequence):
-        if index != start_index and sequence[start_index] == item:
-            repeat_index = index
-            current_index = start_index
-            while (current_index < repeat_index):
-                if (sequence[current_index] != sequence[current_index + repeat_index]):
-                    loop_length = 0
-                    break
-                current_index += 1
-                loop_length += 1
-            
-        if (loop_length != 0):
-            break;
-        else:
-            start_index += 1
-    
-    return start_index, loop_length
-
 with open(filename, 'r') as f:
     result = 0
     result2 = 0
@@ -112,7 +89,7 @@ with open(filename, 'r') as f:
     print('-----------------------------')
     
     # PART 2
-    cycles = 200
+    cycles = 200 # has to be high enough to detect the sequence
     sequence = []
 
     for cycle in range(cycles):
@@ -120,13 +97,9 @@ with open(filename, 'r') as f:
             new_platform = tilt_platform(new_platform, i)
         
         sequence.append(count_load(new_platform))
-        #print('cycle: ', cycle, ' result: ', count_load(new_platform))
     print('-----------------------------')
 
-    # my detect sequence does not work, but if it did, it would provide following numbers
-    print(detect_sequence(sequence))
-    sequence_start = 84
-    sequence_length = 11
+    sequence_start, sequence_length = detect_sequence(sequence)
 
     desired_cycle = 1000000000 - 1 # -1 because we start counting from 0
     result2 = sequence[sequence_start + (desired_cycle - sequence_start) % sequence_length]
