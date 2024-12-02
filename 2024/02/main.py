@@ -37,7 +37,7 @@ def some_variant_is_safe(report):
       copy_report = report.copy() 
       copy_report.pop(ix)
       if is_safe(copy_report):
-          print("safe variant", report, " -> ", copy_report)
+          # print("safe variant", report, " -> ", copy_report)
           return True  
   return False;
 
