@@ -1,7 +1,6 @@
-import copy
 from colors import printC, RED, GREEN, WHITE, YELLOW
 
-filename = 'test.txt'
+filename = 'input.txt'
 
 OBSTACLE = '#'
 EMPTY = '.'
@@ -54,107 +53,72 @@ def turn_guard(guard):
     directions = [GUARD['UP'], GUARD['RIGHT'], GUARD['DOWN'], GUARD['LEFT']]
     return directions[(directions.index(guard) + 1) % 4]
 
-def move_guard(map):
-    guard_position = get_guard_position(map)
-    current_guard = map[guard_position[1]][guard_position[0]]
+def isObstacle(map, position, extra_obstacle = None):
+    return position == extra_obstacle or map[position[1]][position[0]] == OBSTACLE
 
-    dx, dy = GUARD_MOVES[current_guard]
-    new_guard_position = (guard_position[0] + dx, guard_position[1] + dy)
-
-    if not is_in_map(map, new_guard_position):
-        return False
-
-    if map[new_guard_position[1]][new_guard_position[0]] == OBSTACLE:
-        map[guard_position[1]][guard_position[0]] = turn_guard(current_guard)
-        return new_guard_position
-
-    map[guard_position[1]][guard_position[0]] = VISITED
-    map[new_guard_position[1]][new_guard_position[0]] = current_guard
-
-    return new_guard_position
-
-def fast_move_guard(map, guard):
+def fast_move_guard(map, guard, extra_obstacle = None):
     position, direction = guard
     dx, dy = GUARD_MOVES[direction]
     new_position = (position[0] + dx, position[1] + dy)
 
     if not is_in_map(map, new_position):
-        return False
+        return None, None
     
-    if map[new_position[1]][new_position[0]] == OBSTACLE:
-        return [], position, turn_guard(direction)
+    if isObstacle(map, new_position, extra_obstacle):
+        guard_update = (position, turn_guard(direction))
+        return None, guard_update
     
-    visited = [new_position]
+    visited = new_position
     guard_update = (new_position, direction)
 
     return visited, guard_update
 
+def get_initial_guard(map):
+    guard_position = get_guard_position(map)
+    guard_direction = map[guard_position[1]][guard_position[0]]
+    return (guard_position, guard_direction)
 
-def play(map):
-    map_copy = copy.deepcopy(map)
+def get_visited(map):
+    visited = set([])
+    guard = get_initial_guard(map)
 
     while True:
-        new_guard_position = move_guard(map_copy)
-        if not new_guard_position:
+        new_visited, updated_guard = fast_move_guard(map, guard)
+        if updated_guard == None:
             break
+        if new_visited != None:
+            visited.add(new_visited)
+        guard = updated_guard
 
-    return map_copy
+    return visited
 
-def detect_loop(map):
-    map_1 = copy.deepcopy(map)
-    map_2 = copy.deepcopy(map)
-    
-    guard1 = (0, 0)
-    guard2 = (0, 1)
+def detect_loop(map, extra_obstacle):
+    initial_guard = get_initial_guard(map)
+    first_iteration = True
+    guard1 = initial_guard
+    guard2 = initial_guard
 
-    while not (guard1 == guard2 and guard1_direction == guard2_direction):
-        move_guard(map_1)
-        update_2 = move_guard(map_2)
-        update_2 = move_guard(map_2)
-        if not update_2:
-            return False
-
-        guard1 = get_guard_position(map_1)
-        guard2 = get_guard_position(map_2)
-        guard1_direction = map_1[guard1[1]][guard1[0]]
-        guard2_direction = map_2[guard2[1]][guard2[0]]
+    while guard1 != guard2 or first_iteration:
+        _, new_guard_1 = fast_move_guard(map, guard1, extra_obstacle)
+        _, new_guard_2 = fast_move_guard(map, guard2, extra_obstacle)
+        if not new_guard_2: return False
+        _, new_guard_2 = fast_move_guard(map, new_guard_2, extra_obstacle)
+        if not new_guard_2: return False
+        guard1 = new_guard_1
+        guard2 = new_guard_2
+        first_iteration = False
     
     return True
 
-def count_visited(map):
-    result = 0
-    visited_map = play(map)
-    
-    for line in visited_map:
-        result += line.count(VISITED)
-
-    # adding one for last position of the guard
-    return result + 1
-
-def get_loop_candidates(map):
-    loop_candidates = []
-    visited_map = play(map)
-
-    for i, line in enumerate(visited_map):
-        for j, cell in enumerate(line):
-            if cell == VISITED or cell in GUARD.values():
-                loop_candidates.append((j, i))
-
-    return loop_candidates
-
 def count_loop_variants(map):
     loop_variants = 0
-    loop_candidates = get_loop_candidates(map)
+    initial_guard = get_initial_guard(map)
+    loop_candidates = get_visited(map)
 
     for candidate in loop_candidates:
-        map_copy = copy.deepcopy(map)
-        guard_position = get_guard_position(map_copy)
-
-        if (guard_position != candidate):
-            map_copy[candidate[1]][candidate[0]] = OBSTACLE
-
-        if detect_loop(map_copy):
-            # print('LOOP:', candidate)
+        if candidate == initial_guard[0]:
+            continue
+        if detect_loop(map, candidate):
             loop_variants += 1
 
     return loop_variants
@@ -165,7 +129,7 @@ with open(filename, 'r') as f:
     for index, line in enumerate(f):
         map.append(parse_line(line.strip()))
 
-    resultA = count_visited(map)
+    resultA = len(get_visited(map))
     resultB = count_loop_variants(map)
 
     print('Part 1:', resultA)
