@@ -1,4 +1,5 @@
 import re;
+import time
 
 filename = 'input.txt'
 
@@ -18,9 +19,10 @@ def is_repeated(text):
     size = len(text)
 
     for c in range(1, size // 2 + 1):
-        expected_string = text[:c] * (size // c)
-        if expected_string == text:
-            return True
+        if size % c == 0:
+            expected_string = text[:c] * (size // c)
+            if expected_string == text:
+                return True
     return False
     
 def get_doubles(start, end):
@@ -42,12 +44,16 @@ with open(filename, 'r') as f:
     part1result = 0
     part2result = 0
 
+    start = time.time()
     matches = read_line(f.readline().strip())
     
     for m in matches:
         first, second = int(m.group(1)), int(m.group(2))
         part1result += get_doubles(first, second)
         part2result += get_repeats(first, second)
+
+    end = time.time()
+    print('Execution time:', end - start)
 
     print('Part 1:', part1result)
     print('Part 2:', part2result)
