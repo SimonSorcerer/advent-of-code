@@ -6,19 +6,6 @@ filename = 'input.txt'
 def read_line(line):
     return list(line.strip())
 
-def find_2_max(batteryBlock):
-    maxA = 0
-    maxB = 0
-
-    for i in range(len(batteryBlock)):
-        if int(batteryBlock[i]) > maxA and i != len(batteryBlock) - 1:
-            maxA = int(batteryBlock[i])
-            maxB = 0
-        elif int(batteryBlock[i]) > maxB:
-            maxB = int(batteryBlock[i])
-
-    return maxA * 10 + maxB
-
 def find_multi_max(batteryBlock, size = 12):
     max_values = [0] * size
 
@@ -49,7 +36,7 @@ with open(filename, 'r') as f:
     
     for line in f:
         batteryBlock = read_line(line)
-        part1result += find_2_max(batteryBlock)
+        part1result += find_multi_max(batteryBlock, 2)
         part2result += find_multi_max(batteryBlock, 12)
     
     end = time.time()
