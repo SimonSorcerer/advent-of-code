@@ -31,10 +31,11 @@ with open(filename, 'r') as f:
     fresh_ranges = []
 
     for line in f:
-        if line.strip() == '':  # Empty line (or only whitespace)
+        if line.strip() == '':
             break;
         fresh_ranges.append(read_range(line))
         
+    # We sort the ranges by start and then we update ranges to not overlap
     fresh_ranges.sort(key=lambda x: x[0])
     for i in range(len(fresh_ranges)):
         rangeA = fresh_ranges[i]
