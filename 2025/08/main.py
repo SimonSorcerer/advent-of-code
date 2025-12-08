@@ -13,6 +13,7 @@ def parse_line(line):
     return list(map(int, line.split(',')))
 
 def squared_distance(p1, p2):
+    # we can use squared distance for performance since we are just comparing (skipping sqrt from proper euclidean distance)
     return math.pow(p2[0] - p1[0], 2) + math.pow(p2[1] - p1[1], 2) + math.pow(p2[2] - p1[2], 2)
 
 def create_distance_map(lines):
