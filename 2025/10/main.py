@@ -38,7 +38,7 @@ def lights_bfs(buttons, target, start):
                 visited.add(new_state_tuple)
                 queue.append((new_state_tuple, presses + [i]))    
 
-# Integer Linear Programming solutions (using PuLP) - not mine :)
+# Integer Linear Programming solution (using PuLP) - took some time to set up :(
 def solve_joltage(buttons, target):
     n = len(target)
     
