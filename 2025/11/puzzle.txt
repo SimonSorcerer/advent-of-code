@@ -38,8 +38,6 @@ How many different paths lead from you to out?
 
 Your puzzle answer was 552.
 
-The first half of this puzzle is complete! It provides one gold star: *
-
 --- Part Two ---
 Thanks in part to your analysis, the Elves have figured out a little bit about the issue. They now know that the problematic data path passes through both dac (a digital-to-analog converter) and fft (a device which performs a fast Fourier transform).
 
@@ -73,3 +71,7 @@ svr,bbb,tty,ccc,eee,dac,fff,hhh,out
 However, only 2 paths from svr to out visit both dac and fft.
 
 Find all of the paths that lead from svr to out. How many of those paths visit both dac and fft?
+
+Your puzzle answer was 307608674109300.
+
+Both parts of this puzzle are complete! They provide two gold stars: **

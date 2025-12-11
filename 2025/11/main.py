@@ -10,6 +10,7 @@ def parse_line(line):
     return match[0], list(match)[1:]
 
 # Breadth-First Search to find all the paths (without infinite loop detection - no need)
+# Thanks to AsirisPava for super simple solution
 def find_paths(routing_map, start, target):
     queue = deque([(start)])
     out_count = 0
@@ -24,39 +25,36 @@ def find_paths(routing_map, start, target):
             if state in routing_map:
                 for node in routing_map[state]:
                     queue.append(node)   
-    return out_count 
-    print("Computing svr -> fft...")
-    svr_to_fft = find_paths(routing_map, 'svr', 'fft')
-    print(f"  Result: {svr_to_fft}")
+    return out_count
+
+# recursive DFS with memoization to find all paths that pass through required nodes
+def find_paths_dp(routing_map, start, target, required_nodes):
+    cache = {}
     
-    print("Computing svr -> dac...")
-    svr_to_dac = find_paths(routing_map, 'svr', 'dac')
-    print(f"  Result: {svr_to_dac}")
+    def solve(node, found_node1, found_node2):
+        # Mark as found if we're at the required node
+        found_node1 = found_node1 or (node == required_nodes[0])
+        found_node2 = found_node2 or (node == required_nodes[1])
+        
+        # Check cache
+        key = (node, found_node1, found_node2)
+        if key in cache:
+            return cache[key]
+        
+        if node == target:
+            return 1 if (found_node1 and found_node2) else 0
+        
+        if node not in routing_map:
+            return 0
+        
+        total_paths = 0
+        for next_node in routing_map[node]:
+            total_paths += solve(next_node, found_node1, found_node2)
+        
+        cache[key] = total_paths
+        return total_paths
     
-    print("Computing fft -> dac...")
-    fft_to_dac = find_paths(routing_map, 'fft', 'dac')
-    print(f"  Result: {fft_to_dac}")
-    
-    print("Computing dac -> fft...")
-    dac_to_fft = find_paths(routing_map, 'dac', 'fft')
-    print(f"  Result: {dac_to_fft}")
-    
-    print("Computing fft -> out...")
-    fft_to_out = find_paths(routing_map, 'fft', 'out')
-    print(f"  Result: {fft_to_out}")
-    
-    print("Computing dac -> out...")
-    dac_to_out = find_paths(routing_map, 'dac', 'out')
-    print(f"  Result: {dac_to_out}")
-    
-    # Now compute the combinations
-    paths1 = svr_to_fft * fft_to_dac * dac_to_out
-    paths2 = svr_to_dac * dac_to_fft * fft_to_out
-    
-    print(f"\nPath 1 (svr->fft->dac->out): {paths1}")
-    print(f"Path 2 (svr->dac->fft->out): {paths2}")
-    
-    return paths1 + paths2
+    return solve(start, False, False)
 
 with open(filename, 'r') as f:
     part1result = 0
@@ -67,7 +65,8 @@ with open(filename, 'r') as f:
     with open(filename, 'r') as f:
         lines = { key: values for key, values in map(parse_line, f.read().splitlines())}
 
-    part1result = find_paths(lines, start='you', target='out')
+    part1result = find_paths(lines, 'you', 'out')
+    part2result = find_paths_dp(lines, 'svr', 'out', ['fft', 'dac'])
         
     end = time_module.time()
     print('Execution time:', end - start)
