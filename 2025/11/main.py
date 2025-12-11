@@ -10,7 +10,6 @@ def parse_line(line):
     return match[0], list(match)[1:]
 
 # Breadth-First Search to find all the paths (without infinite loop detection - no need)
-# Thanks to AsirisPava for super simple solution
 def find_paths(routing_map, start, target):
     queue = deque([(start)])
     out_count = 0
@@ -28,6 +27,7 @@ def find_paths(routing_map, start, target):
     return out_count
 
 # recursive DFS with memoization to find all paths that pass through required nodes
+# Thanks to AsirisPava for super simple solution
 def find_paths_dp(routing_map, start, target, required_nodes):
     cache = {}
     
